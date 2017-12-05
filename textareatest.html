@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>autoresizing textarea</title>
+<style type="text/css">
+textarea {
+   
+    	 border-radius:5px; 
+    	 border:1px solid #b3b3b3; 
+    	 box-shadow:inset 3px 3px 7px rgba(0,0,0,0.08);
+    	 width:818px;
+    	 padding:10px; 
+    	 height:60px; 
+    	 min-height: 20px; 
+         max-height: 300px;/*高度值根据屏幕高度设置，是为了防止文本框高度大于屏幕高度后再点击换行或空格时，页面自动定位到文本框顶端，那么页底文字就看不到的情况。*/
+    	 text-align:left; 
+    	 resize:none; 
+    	 margin-bottom:10px;
+}
+</style>
+<script type="text/javascript">
+var observe;
+if (window.attachEvent) {
+    observe = function (element, event, handler) {
+        element.attachEvent('on'+event, handler);
+    };
+}
+else {
+    observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+    };
+}
+function init () {
+    var text = document.getElementById('text');
+    function resize () {
+        text.style.height = 'auto';
+        var vHeight= text.scrollHeight + 2;
+        text.style.height =vHeight +'px';
+    }
+    /* 0-timeout to get the already changed text */
+    function delayedResize () {
+        window.setTimeout(resize, 0);
+    }
+    observe(text, 'change',  resize);
+    observe(text, 'cut',     delayedResize);
+    observe(text, 'paste',   delayedResize);
+    observe(text, 'drop',    delayedResize);
+    observe(text, 'keydown', delayedResize);
+    text.focus();
+    text.select();
+    resize();
+}
+</script>
+</head>
+<body onload="init();">
+<textarea cols="" rows="" id="text"></textarea>
+</body>
+</html>
